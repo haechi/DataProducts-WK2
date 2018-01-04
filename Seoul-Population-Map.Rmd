@@ -1,0 +1,55 @@
+---
+title: 'Data Products: Polulation Data - Seoul'
+author: "Alexander Zhou"
+date: "1/4/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(leaflet)
+```
+
+
+## Population by Districts Seoul, South Korea
+
+The data was sourced on *January 4th, 2017* from official Seoul Metropolitan Government Data Management [homepage](http://data.seoul.go.kr). The data used in this map is accessible under the demographics section, using the direct link [here](http://data.seoul.go.kr/dataList/datasetView.do?serviceKind=2&infId=419&stcSrl=419&srvType=S). The circles represent the average population during the 4th quarter of 2017 across all districts, with different colors for districts north and south of the Han river. 
+
+```{r population, echo=FALSE}
+districts <- data.frame(name = c("Jongno", "Jung", "Yongsan", "Seongdong", 
+                                 "Gwangjin", "Dongdaemun", "Jungnang",
+                                 "Seongbuk", "Gangbuk","Dobong",
+                                 "Nowon","Eunpyeong","Seodaemun","Mapo",
+                                 "Yangcheon","Gangseo","Guro","Geumcheon",
+                                 "Yeongdeungpo","Dongjak","Gwanak","Seocho",
+                                 "Gangnam","Songpa","Gangdong"),
+                        pop = c(164640, 134174, 243922, 312933, 372414, 367769, 414554,
+                                458261, 329042, 347338, 562278, 491899, 326479, 387776,
+                                476627, 607877, 443288, 253646, 401908, 410703, 522849, 
+                                447177, 565731, 668366, 446760),
+                        lat = c(37.5802, 37.5635, 37.53229, 37.5503, 37.5448, 
+                                37.5824, 37.5966, 37.5979, 37.6401, 37.6656, 
+                                37.6509, 37.6164, 37.5783, 37.5666, 37.5228, 
+                                37.5582, 37.4986, 37.4596, 37.5168, 37.5021,
+                                37.4683, 37.4781, 37.5007, 37.5084, 37.5476),
+                        lng = c(126.9827, 126.9971, 126.9819, 127.0407, 127.0823,
+                                127.0538, 127.0916, 127.0205, 127.0109, 127.0322,
+                                127.0734, 126.9285, 126.9374, 126.9017, 126.8547, 
+                                126.8327, 126.8588, 126.9024, 126.9089, 126.9546, 
+                                126.9505, 127.0147, 127.0497, 127.1173, 127.1434),
+                        location = c("N","N","N","N","N","N","N","N","N","N","N",
+                                     "N","N","N","S","S","S","S","S","S","S","S",
+                                     "S","S","S"))
+```
+
+
+```{r leavlet, echo=FALSE, message=FALSE}
+pal <- colorFactor(c("navy", "orange"), domain = c("N", "S"))
+                   
+districts %>% leaflet() %>% addTiles() %>% 
+  addCircles(weight = 3, radius = districts$pop/300, stroke = FALSE, 
+             color = ~pal(districts$location), fillOpacity = 0.5, 
+             label = paste(sep = ": ",districts$name,districts$pop), labelOptions = labelOptions(textOnly = TRUE,textsize = "12px")) 
+
+```
+
